@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+   <!-- Панель доступности -->
+  <div id="accessibility-bar">
+    <button onclick="increaseFont()" aria-label="Увеличить шрифт">A+</button>
+    <button onclick="decreaseFont()" aria-label="Уменьшить шрифт">A-</button>
+    <button onclick="toggleContrast()" aria-label="Высокая контрастность">Контраст</button>
+  </div>
   <!-- Header -->
   <header>
     <div class="container">
@@ -78,3 +84,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
