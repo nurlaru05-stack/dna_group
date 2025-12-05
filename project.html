@@ -6,6 +6,7 @@
     <title>DataHub ВУЗ-ов РК - Каталог университетов Казахстана</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         :root {
             --primary-color: #003366;
@@ -14,6 +15,7 @@
             --light-color: #f5f5f5;
             --dark-color: #333;
             --success-color: #4CAF50;
+            --ai-color: #6a11cb;
             --text-color: #333;
             --text-light: #666;
             --font-size-normal: 16px;
@@ -56,6 +58,159 @@
             justify-content: center;
             font-size: 24px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Стили для AI чата */
+        .ai-chat-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1001;
+            background: linear-gradient(135deg, var(--ai-color), #2575fc);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 6px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .ai-chat-panel {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .ai-chat-panel.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--ai-color), #2575fc);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.ai {
+            background: #f0f2f5;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, var(--ai-color), #2575fc);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .chat-input button {
+            background: linear-gradient(135deg, var(--ai-color), #2575fc);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* AI генерация данных */
+        .ai-generate-btn {
+            background: linear-gradient(135deg, var(--ai-color), #2575fc);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px auto;
+            font-size: 16px;
+            transition: transform 0.3s;
+        }
+
+        .ai-generate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .ai-loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .ai-loading.active {
+            display: block;
+        }
+
+        .ai-loading i {
+            font-size: 2rem;
+            color: var(--ai-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .high-contrast {
@@ -332,6 +487,7 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.3s;
+            position: relative;
         }
 
         .university-card:hover {
@@ -456,6 +612,34 @@
             color: white;
         }
 
+        /* AI Features */
+        .ai-features {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .ai-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .ai-feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .ai-feature-icon {
+            font-size: 3rem;
+            color: var(--ai-color);
+            margin-bottom: 20px;
+        }
+
         /* Footer */
         footer {
             background: var(--primary-color);
@@ -534,10 +718,15 @@
             .hero h2 {
                 font-size: 2rem;
             }
+            
+            .ai-chat-panel {
+                width: 350px;
+                height: 500px;
+            }
         }
 
         @media (max-width: 768px) {
-            .universities-grid, .features-grid {
+            .universities-grid, .features-grid, .ai-feature-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -547,6 +736,19 @@
             
             .comparison-controls {
                 flex-direction: column;
+            }
+            
+            .ai-chat-panel {
+                width: 100%;
+                height: 100vh;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+            }
+            
+            .ai-chat-btn {
+                bottom: 20px;
+                right: 20px;
             }
         }
 
@@ -575,6 +777,29 @@
     <button class="accessibility-btn" id="accessibilityToggle" aria-label="Открыть панель доступности">
         <i class="fas fa-universal-access"></i>
     </button>
+    
+    <!-- AI Чат-бот -->
+    <button class="ai-chat-btn" id="aiChatToggle" aria-label="Открыть чат с ИИ">
+        <i class="fas fa-robot"></i>
+    </button>
+    
+    <div class="ai-chat-panel" id="aiChatPanel">
+        <div class="chat-header">
+            <h3><i class="fas fa-robot"></i> AI Помощник</h3>
+            <button id="closeChat" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai">
+                Здравствуйте! Я AI помощник DataHub. Чем могу помочь? Задавайте вопросы о вузах, поступлении, программах или сравнении университетов.
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Введите ваш вопрос..." aria-label="Поле ввода для чата">
+            <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
     
     <!-- Панель доступности -->
     <div class="accessibility-panel" id="accessibilityPanel">
@@ -643,6 +868,7 @@
                     <li><a href="#3d-tour">3D-тур</a></li>
                     <li><a href="#international">Международное сотрудничество</a></li>
                     <li><a href="#comparison">Сравнение вузов</a></li>
+                    <li><a href="#ai-features">AI Возможности</a></li>
                     <li><a href="#contact">Контакты</a></li>
                 </ul>
             </nav>
@@ -652,11 +878,11 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="container">
-            <h2>Каталог университетов Казахстана</h2>
-            <p>DataHub ВУЗ-ов РК предоставляет полную информацию о высших учебных заведениях Казахстана, их программах, требованиях к поступлению и возможностях для студентов.</p>
+            <h2>Каталог университетов Казахстана с AI помощником</h2>
+            <p>DataHub ВУЗ-ов РК предоставляет полную информацию о высших учебных заведениях Казахстана с использованием искусственного интеллекта для анализа данных и персонализированных рекомендаций.</p>
             <div>
                 <a href="#catalog" class="cta-button">Найти университет</a>
-                <a href="#comparison" class="cta-button secondary">Сравнить вузы</a>
+                <a href="#ai-features" class="cta-button secondary">AI Возможности</a>
             </div>
         </div>
     </section>
@@ -668,6 +894,15 @@
             <div class="container">
                 <h2 class="section-title">Каталог университетов</h2>
                 
+                <div class="ai-loading" id="aiLoading">
+                    <i class="fas fa-spinner"></i>
+                    <p>AI анализирует данные и заполняет каталог...</p>
+                </div>
+                
+                <button class="ai-generate-btn" id="aiGenerateData">
+                    <i class="fas fa-magic"></i> Сгенерировать данные с помощью AI
+                </button>
+                
                 <div class="catalog-filters">
                     <div class="filter-group">
                         <div>
@@ -678,6 +913,9 @@
                                 <option value="almaty">Алматы</option>
                                 <option value="shymkent">Шымкент</option>
                                 <option value="karaganda">Караганда</option>
+                                <option value="abai">Абайская область</option>
+                                <option value="aktobe">Актюбинская область</option>
+                                <option value="almaty-region">Алматинская область</option>
                             </select>
                         </div>
                         <div>
@@ -687,6 +925,7 @@
                                 <option value="national">Национальный</option>
                                 <option value="state">Государственный</option>
                                 <option value="private">Частный</option>
+                                <option value="international">Международный</option>
                             </select>
                         </div>
                         <div>
@@ -696,6 +935,9 @@
                                 <option value="technical">Технические</option>
                                 <option value="medical">Медицинские</option>
                                 <option value="humanities">Гуманитарные</option>
+                                <option value="economic">Экономические</option>
+                                <option value="pedagogical">Педагогические</option>
+                                <option value="agricultural">Сельскохозяйственные</option>
                             </select>
                         </div>
                     </div>
@@ -704,11 +946,49 @@
                             <label for="searchFilter">Название:</label>
                             <input type="text" id="searchFilter" placeholder="Введите название вуза">
                         </div>
+                        <div>
+                            <label for="aiRecommendation">AI рекомендация:</label>
+                            <button id="aiRecommendBtn" style="padding: 8px 15px; background: var(--ai-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                <i class="fas fa-brain"></i> Получить рекомендацию
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="universities-grid">
+                <div class="universities-grid" id="universitiesGrid">
                     <!-- University cards will be generated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Features Section -->
+        <section id="ai-features" class="ai-features">
+            <div class="container">
+                <h2 class="section-title">AI Возможности DataHub</h2>
+                <p>Используйте искусственный интеллект для получения персонализированных рекомендаций, анализа данных и автоматического заполнения информации</p>
+                
+                <div class="ai-feature-grid">
+                    <div class="ai-feature-card">
+                        <div class="ai-feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI Генерация данных</h3>
+                        <p>Автоматическое заполнение каталога университетов с актуальной информацией о программах, рейтингах и требованиях</p>
+                    </div>
+                    <div class="ai-feature-card">
+                        <div class="ai-feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Умный чат-бот</h3>
+                        <p>24/7 поддержка по вопросам поступления, программ и сравнения университетов с помощью AI-ассистента</p>
+                    </div>
+                    <div class="ai-feature-card">
+                        <div class="ai-feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Анализ и прогнозы</h3>
+                        <p>AI анализ тенденций в образовании, прогнозирование рейтингов и рекомендации по выбору специальности</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -723,28 +1003,40 @@
                             <i class="fas fa-bullseye"></i>
                         </div>
                         <h3>Миссия и видение</h3>
-                        <p>Стратегические цели и задачи университета в области образования, науки и вклада в развитие страны.</p>
+                        <p id="missionText">Нажмите кнопку AI ниже для генерации информации</p>
+                        <button class="ai-generate-btn" style="padding: 8px 15px; margin-top: 10px;" onclick="generateAIMission()">
+                            <i class="fas fa-magic"></i> Сгенерировать с AI
+                        </button>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-history"></i>
                         </div>
                         <h3>История</h3>
-                        <p>Историческое развитие университета, ключевые этапы становления и достижения за годы работы.</p>
+                        <p id="historyText">AI может сгенерировать историческую справку университета</p>
+                        <button class="ai-generate-btn" style="padding: 8px 15px; margin-top: 10px;" onclick="generateAIHistory()">
+                            <i class="fas fa-magic"></i> Сгенерировать с AI
+                        </button>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-users"></i>
                         </div>
                         <h3>Лидерство</h3>
-                        <p>Информация о руководстве университета, ректорате и административной структуре.</p>
+                        <p id="leadershipText">Информация о руководстве будет сгенерирована AI</p>
+                        <button class="ai-generate-btn" style="padding: 8px 15px; margin-top: 10px;" onclick="generateAILeadership()">
+                            <i class="fas fa-magic"></i> Сгенерировать с AI
+                        </button>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <i class="fas fa-trophy"></i>
                         </div>
                         <h3>Достижения</h3>
-                        <p>Награды, рейтинги, научные открытия и успехи студентов и выпускников университета.</p>
+                        <p id="achievementsText">AI найдет и представит ключевые достижения</p>
+                        <button class="ai-generate-btn" style="padding: 8px 15px; margin-top: 10px;" onclick="generateAIAchievements()">
+                            <i class="fas fa-magic"></i> Сгенерировать с AI
+                        </button>
                     </div>
                 </div>
             </div>
@@ -754,21 +1046,24 @@
         <section id="programs">
             <div class="container">
                 <h2 class="section-title">Академические программы</h2>
-                <div class="features-grid">
+                <button class="ai-generate-btn" id="aiGeneratePrograms">
+                    <i class="fas fa-graduation-cap"></i> AI Анализ программ университетов
+                </button>
+                <div class="features-grid" id="programsGrid">
                     <div class="feature-card">
                         <h3>Бакалавриат</h3>
                         <p>Программы бакалавриата по различным специальностям с указанием сроков обучения и требований.</p>
-                        <a href="#bachelor" class="cta-button" style="padding: 8px 15px; margin-top: 15px; display: inline-block;">Подробнее</a>
+                        <div id="bachelorPrograms"></div>
                     </div>
                     <div class="feature-card">
                         <h3>Магистратура</h3>
                         <p>Магистерские программы для углубленного изучения специальностей и научно-исследовательской работы.</p>
-                        <a href="#master" class="cta-button" style="padding: 8px 15px; margin-top: 15px; display: inline-block;">Подробнее</a>
+                        <div id="masterPrograms"></div>
                     </div>
                     <div class="feature-card">
                         <h3>Докторантура</h3>
                         <p>Программы PhD для подготовки научных кадров высшей квалификации и проведения исследований.</p>
-                        <a href="#phd" class="cta-button" style="padding: 8px 15px; margin-top: 15px; display: inline-block;">Подробнее</a>
+                        <div id="phdPrograms"></div>
                     </div>
                 </div>
             </div>
@@ -781,540 +1076,11 @@
                 <div class="features-grid">
                     <div class="feature-card">
                         <h3>Требования</h3>
-                        <p>Вступительные экзамены, минимальные баллы, необходимые документы для поступления.</p>
+                        <p id="requirementsText">AI проанализирует и сгенерирует актуальные требования для поступления</p>
+                        <button class="ai-generate-btn" style="padding: 8px 15px; margin-top: 10px;" onclick="generateAIRequirements()">
+                            <i class="fas fa-magic"></i> Сгенерировать с AI
+                        </button>
                     </div>
                     <div class="feature-card">
                         <h3>Сроки подачи</h3>
-                        <p>График приёмной кампании, дедлайны для подачи документов на различные программы.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Стипендии</h3>
-                        <p>Информация о государственных и университетских стипендиях, грантах и финансовой помощи.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Общежитие</h3>
-                        <p>Условия проживания в студенческих общежитиях, стоимость и процесс заселения.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3D Tour -->
-        <section id="3d-tour">
-            <div class="container">
-                <h2 class="section-title">3D-тур по кампусу</h2>
-                <div class="tour-container">
-                    <div class="tour-placeholder">
-                        <i class="fas fa-university"></i>
-                        <h3>Виртуальный тур по университетскому кампусу</h3>
-                        <p>Исследуйте аудитории, лаборатории, библиотеки и общежития в 3D-формате</p>
-                    </div>
-                    <p>3D-тур позволяет дистанционно ознакомиться с инфраструктурой университета, совершить виртуальную прогулку по территории кампуса и осмотреть учебные корпуса изнутри.</p>
-                    <a href="#" class="cta-button" style="margin-top: 20px;">Запустить 3D-тур</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- International Cooperation -->
-        <section id="international" style="background-color: #f9f9f9;">
-            <div class="container">
-                <h2 class="section-title">Международное сотрудничество</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <h3>Программы обмена</h3>
-                        <p>Возможности для семестрового или годичного обучения в зарубежных университетах-партнерах.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Партнёрские университеты</h3>
-                        <p>Список зарубежных вузов, с которыми заключены соглашения о сотрудничестве.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Для иностранных студентов</h3>
-                        <p>Условия приёма, визовая поддержка и адаптационные программы для иностранных абитуриентов.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>Двойные дипломы</h3>
-                        <p>Совместные программы с зарубежными университетами, ведущие к получению двух дипломов.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Comparison Tool -->
-        <section id="comparison">
-            <div class="container">
-                <h2 class="section-title">Сравнение вузов и программ</h2>
-                <div class="comparison-tool">
-                    <p>Выберите до 3 университетов для сравнения их основных характеристик и академических программ.</p>
-                    
-                    <div class="comparison-controls">
-                        <select id="compareSelect1">
-                            <option value="">Выберите первый университет</option>
-                        </select>
-                        <select id="compareSelect2">
-                            <option value="">Выберите второй университет</option>
-                        </select>
-                        <select id="compareSelect3">
-                            <option value="">Выберите третий университет</option>
-                        </select>
-                        <button id="compareButton" class="cta-button">Сравнить</button>
-                    </div>
-                    
-                    <div class="comparison-table">
-                        <table id="comparisonTable">
-                            <thead>
-                                <tr>
-                                    <th>Параметр</th>
-                                    <th id="uni1Header">Университет 1</th>
-                                    <th id="uni2Header">Университет 2</th>
-                                    <th id="uni3Header">Университет 3</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Comparison data will be inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>DataHub ВУЗ-ов РК</h3>
-                    <p>Официальный каталог университетов Казахстана с полной информацией об академических программах, поступлении и международном сотрудничестве.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Контакты</h3>
-                    <ul>
-                        <li><i class="fas fa-map-marker-alt"></i> г. Нур-Султан, ул. Керей, Жанибек хандар 8</li>
-                        <li><i class="fas fa-phone"></i> +7 (7172) 123-456</li>
-                        <li><i class="fas fa-envelope"></i> info@datahub-kz.edu</li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Быстрые ссылки</h3>
-                    <ul>
-                        <li><a href="#about">Об университете</a></li>
-                        <li><a href="#programs">Академические программы</a></li>
-                        <li><a href="#admission">Поступление</a></li>
-                        <li><a href="#3d-tour">3D-тур</a></li>
-                        <li><a href="#comparison">Сравнение вузов</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Социальные сети</h3>
-                    <ul>
-                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                        <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
-                        <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2023 DataHub ВУЗ-ов РК. Все права защищены.</p>
-                <p>Сайт разработан с учётом потребностей людей с ограниченными возможностями.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Данные университетов
-        const universities = [
-            {
-                id: 1,
-                name: "Назарбаев Университет",
-                location: "Нур-Султан",
-                type: "national",
-                programs: ["technical", "medical", "humanities"],
-                established: 2010,
-                students: 6000,
-                rating: 9.8,
-                description: "Ведущий исследовательский университет Казахстана"
-            },
-            {
-                id: 2,
-                name: "КазНУ им. аль-Фараби",
-                location: "Алматы",
-                type: "national",
-                programs: ["technical", "humanities"],
-                established: 1934,
-                students: 20000,
-                rating: 9.2,
-                description: "Крупнейший классический университет Казахстана"
-            },
-            {
-                id: 3,
-                name: "Евразийский национальный университет",
-                location: "Нур-Султан",
-                type: "national",
-                programs: ["technical", "humanities"],
-                established: 1996,
-                students: 16000,
-                rating: 8.9,
-                description: "Ведущий вуз в области технических и гуманитарных наук"
-            },
-            {
-                id: 4,
-                name: "Казахстанско-Британский технический университет",
-                location: "Алматы",
-                type: "state",
-                programs: ["technical"],
-                established: 2001,
-                students: 4000,
-                rating: 8.7,
-                description: "Специализируется на технических и инженерных направлениях"
-            },
-            {
-                id: 5,
-                name: "Медицинский университет Астана",
-                location: "Нур-Султан",
-                type: "state",
-                programs: ["medical"],
-                established: 1964,
-                students: 5000,
-                rating: 8.5,
-                description: "Ведущий медицинский вуз страны"
-            },
-            {
-                id: 6,
-                name: "Университет Нархоз",
-                location: "Алматы",
-                type: "private",
-                programs: ["humanities"],
-                established: 1963,
-                students: 8000,
-                rating: 8.3,
-                description: "Ведущий экономический университет Казахстана"
-            }
-        ];
-
-        // Генерация карточек университетов
-        function generateUniversityCards(filteredUniversities = universities) {
-            const grid = document.querySelector('.universities-grid');
-            grid.innerHTML = '';
-            
-            filteredUniversities.forEach(university => {
-                const card = document.createElement('div');
-                card.className = 'university-card';
-                card.innerHTML = `
-                    <div class="university-img">
-                        <i class="fas fa-university"></i>
-                    </div>
-                    <div class="university-info">
-                        <h3>${university.name}</h3>
-                        <div class="university-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${university.location}</span>
-                            <span>Рейтинг: ${university.rating}/10</span>
-                        </div>
-                        <p>${university.description}</p>
-                        <div class="university-meta">
-                            <span>Основан: ${university.established}</span>
-                            <span>Студентов: ${university.students.toLocaleString()}</span>
-                        </div>
-                        <div class="compare-checkbox">
-                            <input type="checkbox" id="compare-${university.id}" data-id="${university.id}" data-name="${university.name}">
-                            <label for="compare-${university.id}">Добавить к сравнению</label>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            
-            // Заполняем выпадающие списки для сравнения
-            updateComparisonSelects();
-        }
-
-        // Обновление выпадающих списков для сравнения
-        function updateComparisonSelects() {
-            const select1 = document.getElementById('compareSelect1');
-            const select2 = document.getElementById('compareSelect2');
-            const select3 = document.getElementById('compareSelect3');
-            
-            // Сохраняем текущие значения
-            const currentVal1 = select1.value;
-            const currentVal2 = select2.value;
-            const currentVal3 = select3.value;
-            
-            // Очищаем опции (кроме первой)
-            while(select1.options.length > 1) select1.remove(1);
-            while(select2.options.length > 1) select2.remove(1);
-            while(select3.options.length > 1) select3.remove(1);
-            
-            // Добавляем университеты
-            universities.forEach(uni => {
-                const option = document.createElement('option');
-                option.value = uni.id;
-                option.textContent = uni.name;
-                
-                const option2 = option.cloneNode(true);
-                const option3 = option.cloneNode(true);
-                
-                select1.appendChild(option);
-                select2.appendChild(option2);
-                select3.appendChild(option3);
-            });
-            
-            // Восстанавливаем значения
-            select1.value = currentVal1;
-            select2.value = currentVal2;
-            select3.value = currentVal3;
-        }
-
-        // Фильтрация университетов
-        function filterUniversities() {
-            const region = document.getElementById('regionFilter').value;
-            const type = document.getElementById('typeFilter').value;
-            const program = document.getElementById('programFilter').value;
-            const search = document.getElementById('searchFilter').value.toLowerCase();
-            
-            const filtered = universities.filter(uni => {
-                // Фильтр по региону
-                if (region !== 'all') {
-                    const regionMap = {
-                        'nur-sultan': 'Нур-Султан',
-                        'almaty': 'Алматы',
-                        'shymkent': 'Шымкент',
-                        'karaganda': 'Караганда'
-                    };
-                    if (uni.location !== regionMap[region]) return false;
-                }
-                
-                // Фильтр по типу
-                if (type !== 'all' && uni.type !== type) return false;
-                
-                // Фильтр по программе
-                if (program !== 'all' && !uni.programs.includes(program)) return false;
-                
-                // Фильтр по поиску
-                if (search && !uni.name.toLowerCase().includes(search)) return false;
-                
-                return true;
-            });
-            
-            generateUniversityCards(filtered);
-        }
-
-        // Функция сравнения университетов
-        function compareUniversities() {
-            const uni1Id = document.getElementById('compareSelect1').value;
-            const uni2Id = document.getElementById('compareSelect2').value;
-            const uni3Id = document.getElementById('compareSelect3').value;
-            
-            const selectedIds = [uni1Id, uni2Id, uni3Id].filter(id => id);
-            
-            if (selectedIds.length < 2) {
-                alert('Пожалуйста, выберите как минимум 2 университета для сравнения.');
-                return;
-            }
-            
-            const selectedUnis = selectedIds.map(id => 
-                universities.find(uni => uni.id == id)
-            );
-            
-            // Обновляем заголовки таблицы
-            document.getElementById('uni1Header').textContent = selectedUnis[0]?.name || 'Университет 1';
-            document.getElementById('uni2Header').textContent = selectedUnis[1]?.name || 'Университет 2';
-            document.getElementById('uni3Header').textContent = selectedUnis[2]?.name || 'Университет 3';
-            
-            // Генерируем данные для таблицы
-            const tableBody = document.querySelector('#comparisonTable tbody');
-            tableBody.innerHTML = '';
-            
-            const comparisonData = [
-                { parameter: 'Год основания', key: 'established' },
-                { parameter: 'Количество студентов', key: 'students' },
-                { parameter: 'Рейтинг', key: 'rating' },
-                { parameter: 'Тип вуза', key: 'type', mapper: (val) => {
-                    const typeMap = { national: 'Национальный', state: 'Государственный', private: 'Частный' };
-                    return typeMap[val] || val;
-                }},
-                { parameter: 'Местоположение', key: 'location' }
-            ];
-            
-            comparisonData.forEach(data => {
-                const row = document.createElement('tr');
-                const paramCell = document.createElement('td');
-                paramCell.textContent = data.parameter;
-                row.appendChild(paramCell);
-                
-                // Ячейки для каждого университета
-                for (let i = 0; i < 3; i++) {
-                    const cell = document.createElement('td');
-                    if (selectedUnis[i]) {
-                        let value = selectedUnis[i][data.key];
-                        if (data.mapper) value = data.mapper(value);
-                        if (data.key === 'students') value = value.toLocaleString();
-                        cell.textContent = value;
-                    } else {
-                        cell.textContent = '-';
-                    }
-                    row.appendChild(cell);
-                }
-                
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Функции доступности
-        function initAccessibility() {
-            const panel = document.getElementById('accessibilityPanel');
-            const toggleBtn = document.getElementById('accessibilityToggle');
-            const highContrastBtn = document.getElementById('highContrastToggle');
-            const textIncreaseBtn = document.getElementById('textSizeIncrease');
-            const textDecreaseBtn = document.getElementById('textSizeDecrease');
-            const readerModeBtn = document.getElementById('readerModeToggle');
-            const speakContentBtn = document.getElementById('speakContent');
-            const resetBtn = document.getElementById('resetAccessibility');
-            
-            // Переключение панели доступности
-            toggleBtn.addEventListener('click', () => {
-                panel.classList.toggle('active');
-            });
-            
-            // Высокая контрастность
-            highContrastBtn.addEventListener('click', () => {
-                document.body.classList.toggle('high-contrast');
-                document.querySelectorAll('header, footer, section').forEach(el => {
-                    el.classList.toggle('high-contrast');
-                });
-                document.querySelectorAll('h1, h2, h3, p, span, a, li').forEach(el => {
-                    el.classList.toggle('high-contrast-text');
-                });
-            });
-            
-            // Увеличение текста
-            textIncreaseBtn.addEventListener('click', () => {
-                document.body.classList.remove('text-large', 'text-xlarge');
-                if (document.body.classList.contains('text-large')) {
-                    document.body.classList.add('text-xlarge');
-                } else {
-                    document.body.classList.add('text-large');
-                }
-            });
-            
-            // Уменьшение текста
-            textDecreaseBtn.addEventListener('click', () => {
-                if (document.body.classList.contains('text-xlarge')) {
-                    document.body.classList.remove('text-xlarge');
-                    document.body.classList.add('text-large');
-                } else {
-                    document.body.classList.remove('text-large');
-                }
-            });
-            
-            // Режим для чтения
-            readerModeBtn.addEventListener('click', () => {
-                document.body.classList.toggle('reader-mode');
-            });
-            
-            // Озвучивание текста
-            speakContentBtn.addEventListener('click', () => {
-                if ('speechSynthesis' in window) {
-                    const mainContent = document.querySelector('main').textContent;
-                    const utterance = new SpeechSynthesisUtterance(mainContent.substring(0, 1000));
-                    utterance.lang = 'ru-RU';
-                    speechSynthesis.speak(utterance);
-                } else {
-                    alert('Ваш браузер не поддерживает озвучивание текста.');
-                }
-            });
-            
-            // Сброс настроек
-            resetBtn.addEventListener('click', () => {
-                document.body.className = '';
-                document.querySelectorAll('*').forEach(el => {
-                    el.classList.remove('high-contrast', 'high-contrast-text', 'text-large', 'text-xlarge', 'reader-mode');
-                });
-                panel.classList.remove('active');
-            });
-            
-            // Закрытие панели при клике вне её
-            document.addEventListener('click', (e) => {
-                if (!panel.contains(e.target) && !toggleBtn.contains(e.target)) {
-                    panel.classList.remove('active');
-                }
-            });
-        }
-
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', () => {
-            // Генерация карточек университетов
-            generateUniversityCards();
-            
-            // Инициализация функций доступности
-            initAccessibility();
-            
-            // Настройка фильтров
-            document.getElementById('regionFilter').addEventListener('change', filterUniversities);
-            document.getElementById('typeFilter').addEventListener('change', filterUniversities);
-            document.getElementById('programFilter').addEventListener('change', filterUniversities);
-            document.getElementById('searchFilter').addEventListener('input', filterUniversities);
-            document.getElementById('searchInput').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                const filtered = universities.filter(uni => 
-                    uni.name.toLowerCase().includes(searchTerm) || 
-                    uni.description.toLowerCase().includes(searchTerm)
-                );
-                generateUniversityCards(filtered);
-            });
-            
-            // Настройка сравнения
-            document.getElementById('compareButton').addEventListener('click', compareUniversities);
-            
-            // Мобильное меню
-            document.getElementById('mobileMenuToggle').addEventListener('click', () => {
-                document.getElementById('navMenu').classList.toggle('active');
-            });
-            
-            // Плавная прокрутка для навигации
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#') return;
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                        
-                        // Закрытие мобильного меню
-                        document.getElementById('navMenu').classList.remove('active');
-                    }
-                });
-            });
-            
-            // Активное состояние навигации при прокрутке
-            window.addEventListener('scroll', () => {
-                const sections = document.querySelectorAll('section[id]');
-                const navLinks = document.querySelectorAll('.nav-menu a');
-                
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
-                    if (scrollY >= sectionTop - 100) {
-                        current = section.getAttribute('id');
-                    }
-                });
-                
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${current}`) {
-                        link.classList.add('active');
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+                        <p id="deadlinesText">AI соберет информацию о дедлайнах подачи документов</p>
